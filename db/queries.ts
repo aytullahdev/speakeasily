@@ -21,7 +21,6 @@ export const getUserProgress = cache(async () => {
   if (!userId) {
     return null;
   }
-  console.log("userId", userId);
   const data = await db.query.userProgress.findFirst({
     where: eq(userProgress.userId, userId),
     with: {
