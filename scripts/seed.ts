@@ -67,6 +67,27 @@ const main = async () => {
         unitId: 1,
         order: 2,
       },
+      {
+        id: 3,
+        title: "Gracias",
+        content: "Learn how to say thank you in Spanish",
+        unitId: 1,
+        order: 3,
+      },
+      {
+        id: 4,
+        title: "Por favor",
+        content: "Learn how to say please in Spanish",
+        unitId: 1,
+        order: 4,
+      },
+      {
+        id: 5,
+        title: "Lo siento",
+        content: "Learn how to say sorry in Spanish",
+        unitId: 1,
+        order: 5,
+      },
     ]);
 
     await db.insert(schema.challenges).values([
@@ -103,15 +124,9 @@ const main = async () => {
       },
       {
         id: 3,
-        challengeId: 2,
-        text: "Hello",
-        correct: false,
-      },
-      {
-        id: 4,
-        challengeId: 2,
+        challengeId: 1,
         text: "Goodbye",
-        correct: true,
+        correct: false,
       },
     ]);
 
