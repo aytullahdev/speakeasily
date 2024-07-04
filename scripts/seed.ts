@@ -103,7 +103,7 @@ const main = async () => {
         lessonId: 2,
         type: "SELECT",
         question: "What does Adios mean?",
-        order: 1,
+        order: 2,
       },
     ]);
 
