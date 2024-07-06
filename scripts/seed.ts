@@ -100,7 +100,7 @@ const main = async () => {
       },
       {
         id: 2,
-        lessonId: 2,
+        lessonId: 1,
         type: "SELECT",
         question: "What does Adios mean?",
         order: 2,
@@ -109,7 +109,6 @@ const main = async () => {
 
     await db.insert(schema.challengeOptions).values([
       {
-        id: 1,
         challengeId: 1,
         text: "Hello",
         correct: true,
@@ -117,14 +116,32 @@ const main = async () => {
         imageSrc: "/man.svg",
       },
       {
-        id: 2,
         challengeId: 1,
         text: "Goodbye",
         correct: false,
       },
       {
-        id: 3,
         challengeId: 1,
+        text: "Goodbye",
+        correct: false,
+      },
+    ]);
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: 2,
+        text: "Hello",
+        correct: false,
+        audioSrc: "/es_man.mp3",
+        imageSrc: "/man.svg",
+      },
+      {
+        challengeId: 2,
+        text: "Goodbye",
+        correct: true,
+      },
+      {
+        challengeId: 2,
         text: "Goodbye",
         correct: false,
       },
