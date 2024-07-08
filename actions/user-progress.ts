@@ -8,6 +8,8 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+// TODO: todo remove redundant code to a common file
+const POINTS_TO_REFILL_HEART = 10;
 export const upsertUserProgress = async (courseId: number) => {
   const { userId } = auth();
   const user = await currentUser();
@@ -97,4 +99,39 @@ export const reduceHearts = async (challengeId: number) => {
   revalidatePath("/quests");
   revalidatePath("/leaderboard");
   revalidatePath(`/lesson/${lessonId}`);
+};
+
+export const refillHearts = async () => {
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const currentUserProgress = await getUserProgress();
+  if (!currentUserProgress) {
+    throw new Error("User progress not found");
+  }
+
+  if (currentUserProgress.hearts === 5) {
+    throw new Error("Hearts are full");
+  }
+
+  if (currentUserProgress.points < POINTS_TO_REFILL_HEART) {
+    throw new Error("Not enough points");
+  }
+
+  // refilling hearts and deducting points
+  await db
+    .update(userProgress)
+    .set({
+      hearts: 5,
+      points: currentUserProgress.points - POINTS_TO_REFILL_HEART,
+    })
+    .where(eq(userProgress.userId, userId));
+
+  revalidatePath("/learn");
+  revalidatePath("/shop");
+  revalidatePath("/lesson");
+  revalidatePath("/quests");
+  revalidatePath("/leaderboard");
 };

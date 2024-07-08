@@ -14,8 +14,8 @@ import { reduceHearts } from "@/actions/user-progress";
 import Image from "next/image";
 import { ResultCard } from "./ResultCard";
 import { useRouter } from "next/navigation";
-import { useHeartsModal } from "../store/use-hearts-modal";
-import { usePracticeModal } from "../store/use-practice-modal";
+import { useHeartsModal } from "../../store/use-hearts-modal";
+import { usePracticeModal } from "../../store/use-practice-modal";
 
 type Props = {
   initialPercentage: number;
@@ -151,7 +151,7 @@ export const Quiz = ({
           numberOfPieces={500}
           tweenDuration={10000}
         />
-        <div className="flex flex-col gap-y-4 lg:gap-y-8 max-w-lg mx-auto text-center items-center justify-center h-full">
+        <div className="flex flex-col gap-y-4 lg:gap-y-8 max-w-lg mx-auto text-center items-center justify-center h-full ">
           <Image
             src="/finish.svg"
             alt="Finish"
@@ -201,7 +201,7 @@ export const Quiz = ({
       />
       <div className="flex-1">
         <div className="h-full flex items-center justify-center">
-          <div className="lg:min-h-[350px] lg:w-[600px[ w-full px-6 lg:px-0 flex flex-col gap-y-12">
+          <div className="lg:min-h-[350px] lg:w-[600px[ w-full px-6 lg:px-6 flex flex-col gap-y-12">
             <h1 className="text-lg lg:text-3xl text-center lg:text-start font-bold text-neutral-700">
               {title}
             </h1>
