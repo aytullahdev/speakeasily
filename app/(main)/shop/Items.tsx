@@ -24,7 +24,7 @@ export const Items = ({ hearts, points, hasActiveSubscription }: Props) => {
   };
 
   const onUpgrade = () => {
-    if (pending || hasActiveSubscription) return;
+    if (pending) return;
     startTransition(() => {
       createStripeUrl()
         .then((res) => {
@@ -65,8 +65,8 @@ export const Items = ({ hearts, points, hasActiveSubscription }: Props) => {
             Unlimited Hearts
           </p>
         </div>
-        <Button disabled={pending || hasActiveSubscription} onClick={onUpgrade}>
-          {hasActiveSubscription ? "Active" : "Upgrade"}
+        <Button disabled={pending} onClick={onUpgrade}>
+          {hasActiveSubscription ? "Settings" : "Upgrade"}
         </Button>
       </div>
     </ul>
