@@ -7,6 +7,7 @@ import {
   lessons,
   units,
   userProgress,
+  userSubscription,
 } from "./schema";
 import { eq } from "drizzle-orm";
 export const getCourses = cache(async () => {
@@ -209,4 +210,28 @@ export const getLessonPercentage = cache(async () => {
   ).length;
 
   return Math.round((completedChallenges / totalChallenges) * 100);
+});
+
+const DAY_IN_MS = 1000 * 60 * 60 * 24;
+export const getUserSubscriptions = cache(async () => {
+  const { userId } = auth();
+  if (!userId) {
+    return null;
+  }
+
+  const data = await db.query.userSubscription.findFirst({
+    where: eq(userSubscription.userId, userId),
+  });
+
+  if (!data) {
+    return null;
+  }
+
+  const isActive =
+    data.stripePriceId &&
+    data.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
+  return {
+    ...data,
+    isActive: !!isActive,
+  };
 });
