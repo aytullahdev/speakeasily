@@ -1,6 +1,6 @@
 "use client";
 
-import { challengeOptions, challenges } from "@/db/schema";
+import { challengeOptions, challenges, userSubscription } from "@/db/schema";
 import Confetti from "react-confetti";
 import { useState, useTransition } from "react";
 import { Header } from "./Header";
@@ -25,7 +25,11 @@ type Props = {
     completed: boolean;
     challengeOptions: (typeof challengeOptions.$inferSelect)[];
   })[];
-  userSubscription: any; // TODO: Define user subscription type
+  userSubscription:
+    | (typeof userSubscription.$inferInsert & {
+        isActive: boolean;
+      })
+    | null;
 };
 
 export const Quiz = ({
@@ -197,7 +201,7 @@ export const Quiz = ({
       <Header
         hearts={hearts}
         percentage={percentage}
-        hasActiveSubscription={userSubscription?.active}
+        hasActiveSubscription={!!userSubscription?.isActive}
       />
       <div className="flex-1">
         <div className="h-full flex items-center justify-center">
