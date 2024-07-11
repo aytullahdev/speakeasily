@@ -13,3 +13,8 @@ export const quests = [
     value: 100,
   },
 ];
+
+export const CHALLENGE_SELECT_CHOICES = [
+  { id: "SELECT", name: "SELECT" },
+  { id: "ASSIST", name: "ASSIST" },
+];
