@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "./loginSchema";
+import { signUpSchema } from "./signUpSchema";
 
 import {
   Form,
@@ -17,23 +17,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useTransition } from "react";
-import { loginAction } from "@/actions/login-action";
+import { signupAction } from "@/actions/login-action";
 import { toast } from "sonner";
-import { Loader } from "lucide-react";
-export default function LoginForm() {
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+
+export default function SignUpForm() {
+  const [pending, startTransition] = useTransition();
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
-  const [pending, startTransition] = useTransition();
 
-  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+    if (data.password !== data.confirmPassword) {
+      form.setError("confirmPassword", {
+        type: "manual",
+        message: "Passwords do not match",
+      });
+      return;
+    }
+
     if (pending) return;
+
     startTransition(() => {
-      loginAction(data).catch(() => {
+      signupAction(data).catch(() => {
         toast.error("Something went wrong. Please try again.");
       });
     });
@@ -44,7 +54,7 @@ export default function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card className="mx-auto w-[350px]">
           <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
+            <CardTitle className="text-2xl">Sign Up</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
@@ -71,12 +81,6 @@ export default function LoginForm() {
                     <FormItem>
                       <div className="flex items-center">
                         <FormLabel>Password</FormLabel>
-                        <Link
-                          href="#"
-                          className="ml-auto inline-block text-sm underline"
-                        >
-                          Forgot your password?
-                        </Link>
                       </div>
 
                       <FormControl>
@@ -91,8 +95,30 @@ export default function LoginForm() {
                   )}
                 />
               </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center">
+                        <FormLabel>Confirm Password</FormLabel>
+                      </div>
+
+                      <FormControl>
+                        <Input
+                          placeholder="confirm password"
+                          {...field}
+                          type="password"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <Button type="submit" className="w-full">
-                {pending ? <Loader className="animate-spin" /> : "Login"}
+                Create Account
               </Button>
               <Button
                 variant="primary"
@@ -106,8 +132,8 @@ export default function LoginForm() {
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="underline">
-                Sign up
+              <Link href="/login" className="underline">
+                Sign In
               </Link>
             </div>
           </CardContent>

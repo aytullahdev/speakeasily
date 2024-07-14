@@ -1,15 +1,16 @@
 "use server";
 
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { stripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";
 import { getUserSubscriptions } from "@/db/queries";
+import { supbaseServer } from "@/db/supabaseServer";
 
 const returnUrl = absoluteUrl("/shop");
 
 export const createStripeUrl = async () => {
-  const { userId } = auth();
-  const user = await currentUser();
+  const { data } = await supbaseServer.auth.getUser();
+  const user = data?.user;
+  const userId = data?.user?.id;
 
   if (!user || !userId) {
     throw new Error("Unauthorized");
@@ -29,7 +30,7 @@ export const createStripeUrl = async () => {
   const stripeSession = await stripe.checkout.sessions.create({
     mode: "subscription",
     payment_method_types: ["card"],
-    customer_email: user.emailAddresses[0].emailAddress,
+    customer_email: user.email,
     line_items: [
       {
         quantity: 1,

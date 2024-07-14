@@ -6,7 +6,9 @@ import { redirect } from "next/navigation";
 const App = dynamic(() => import("./app"), { ssr: false });
 const dtaProvider = simpleResetProvider("/api");
 const AdminPage = async () => {
-  if (!isAdmin()) {
+  const adminFlag = await isAdmin();
+
+  if (!adminFlag) {
     redirect("/");
   }
   return <App />;

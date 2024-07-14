@@ -1,6 +1,5 @@
 import { cache } from "react";
 import db from "./drizzle";
-import { auth } from "@clerk/nextjs/server";
 import {
   challengeProgress,
   courses,
@@ -10,6 +9,7 @@ import {
   userSubscription,
 } from "./schema";
 import { eq } from "drizzle-orm";
+import { supbaseServer } from "./supabaseServer";
 export const getCourses = cache(async () => {
   const data = await db.query.courses.findMany();
   return data;
@@ -33,7 +33,8 @@ export const getCourseById = cache(async (id: number) => {
 });
 
 export const getUnits = cache(async () => {
-  const { userId } = auth();
+  const { data: userData } = await supbaseServer.auth.getUser();
+  const userId = userData?.user?.id;
   const userProgress = await getUserProgress();
 
   if (!userProgress || !userProgress.activeCourse || !userId) {
@@ -92,7 +93,8 @@ export const getUnits = cache(async () => {
 });
 
 export const getUserProgress = cache(async () => {
-  const { userId } = auth();
+  const { data: userData } = await supbaseServer.auth.getUser();
+  const userId = userData?.user?.id;
 
   if (!userId) {
     return null;
@@ -107,7 +109,8 @@ export const getUserProgress = cache(async () => {
 });
 
 export const getCourseProgress = cache(async () => {
-  const { userId } = auth();
+  const { data: userData } = await supbaseServer.auth.getUser();
+  const userId = userData?.user?.id;
   const userProgress = await getUserProgress();
   if (!userId || !userProgress) {
     return null;
@@ -155,7 +158,8 @@ export const getCourseProgress = cache(async () => {
 });
 
 export const getLesson = cache(async (id?: number) => {
-  const { userId } = auth();
+  const { data: userData } = await supbaseServer.auth.getUser();
+  const userId = userData?.user?.id;
   if (!userId) {
     return null;
   }
@@ -226,7 +230,8 @@ export const getLessonPercentage = cache(async () => {
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 export const getUserSubscriptions = cache(async () => {
-  const { userId } = auth();
+  const { data: userData } = await supbaseServer.auth.getUser();
+  const userId = userData?.user?.id;
   if (!userId) {
     return null;
   }
@@ -249,7 +254,8 @@ export const getUserSubscriptions = cache(async () => {
 });
 
 export const getTopTenUsers = cache(async () => {
-  const { userId } = auth();
+  const { data: userData } = await supbaseServer.auth.getUser();
+  const userId = userData?.user?.id;
   if (!userId) {
     return [];
   }

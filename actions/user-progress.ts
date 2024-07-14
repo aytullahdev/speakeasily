@@ -8,14 +8,16 @@ import {
   getUserSubscriptions,
 } from "@/db/queries";
 import { challengeProgress, challenges, userProgress } from "@/db/schema";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { supbaseServer } from "@/db/supabaseServer";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export const upsertUserProgress = async (courseId: number) => {
-  const { userId } = auth();
-  const user = await currentUser();
+  const { data } = await supbaseServer.auth.getUser();
+  const user = data?.user;
+  const userId = data?.user?.id;
+
   if (!user || !userId) {
     throw new Error("Unauthorized");
   }
@@ -52,7 +54,8 @@ export const upsertUserProgress = async (courseId: number) => {
 };
 
 export const reduceHearts = async (challengeId: number) => {
-  const { userId } = auth();
+  const { data } = await supbaseServer.auth.getUser();
+  const userId = data?.user?.id;
   if (!userId) {
     throw new Error("Unauthorized");
   }
@@ -106,7 +109,9 @@ export const reduceHearts = async (challengeId: number) => {
 };
 
 export const refillHearts = async () => {
-  const { userId } = auth();
+  const { data } = await supbaseServer.auth.getUser();
+  const userId = data?.user?.id;
+
   if (!userId) {
     throw new Error("Unauthorized");
   }

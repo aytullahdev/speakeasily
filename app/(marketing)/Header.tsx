@@ -1,17 +1,10 @@
-import {
-  ClerkLoaded,
-  ClerkLoading,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
 import Image from "next/image";
 import React from "react";
-import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supbaseServer } from "@/db/supabaseServer";
 
-export const Header = () => {
+export const Header = async () => {
+  const { data } = await supbaseServer.auth.getUser();
   return (
     <header className="h-20 w-full border-b-2 border-slate-300 px-4">
       <div className="lg:max-w-screen-lg mx-auto flex items-center justify-between h-full">
@@ -21,21 +14,13 @@ export const Header = () => {
             Speak Easily
           </h1>
         </div>
-        <ClerkLoading>
-          <Loader className="h-5 w-5 text-muted-foreground animate-spin" />
-        </ClerkLoading>
-        <ClerkLoaded>
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
-          <SignedOut>
-            <SignInButton mode="modal" fallbackRedirectUrl={"/learn"}>
-              <Button size="lg" variant={"ghost"}>
-                Login
-              </Button>
-            </SignInButton>
-          </SignedOut>
-        </ClerkLoaded>
+        {!data?.user?.email ? (
+          <Button size="lg" variant={"ghost"}>
+            Login
+          </Button>
+        ) : (
+          <div className="h-10 w-10 rounded-full bg-slate-300"></div>
+        )}
       </div>
     </header>
   );

@@ -3,12 +3,13 @@
 import db from "@/db/drizzle";
 import { getUserProgress, getUserSubscriptions } from "@/db/queries";
 import { challengeProgress, challenges, userProgress } from "@/db/schema";
-import { auth } from "@clerk/nextjs/server";
+import { supbaseServer } from "@/db/supabaseServer";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const upsertChallengeProgress = async (challengeId: number) => {
-  const { userId } = auth();
+  const { data: userData } = await supbaseServer.auth.getUser();
+  const userId = userData?.user?.id;
 
   if (!userId) {
     throw new Error("Unauthorized");
